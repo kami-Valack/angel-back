@@ -60,7 +60,10 @@ class LoginRequest(BaseModel):
     password: str
 
 class CourseRequest(BaseModel):
-    title: str
+    ti
+    
+    
+    tr
     description: str
     category: str
     level: str
