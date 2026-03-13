@@ -406,6 +406,8 @@ if __name__ == "__main__":
         token = login_admin(email, password)
     
     if token:
+
+        
         print("\n📚 Criando curso de JavaScript...")
         course_id = create_js_course(token)
         
