@@ -58,6 +58,14 @@ CREATE TABLE IF NOT EXISTS resources (
     FOREIGN KEY (lessonId) REFERENCES lessons(id) ON DELETE CASCADE
 );
 
+-- Tabela para categorias de cursos
+CREATE TABLE IF NOT EXISTS categories (
+    id VARCHAR(64) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    icon VARCHAR(512),
+    description TEXT
+);
+
 -- Tabela para progresso do usuário em cursos, módulos e lições
 CREATE TABLE IF NOT EXISTS user_progress (
     id INT AUTO_INCREMENT PRIMARY KEY,
