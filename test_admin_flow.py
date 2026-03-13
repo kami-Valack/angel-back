@@ -407,7 +407,10 @@ if __name__ == "__main__":
     
     if token:
 
-        
+
+
+
+
         print("\n📚 Criando curso de JavaScript...")
         course_id = create_js_course(token)
         
