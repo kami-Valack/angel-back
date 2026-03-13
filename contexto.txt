@@ -1,0 +1,534 @@
+Vou criar um system design completo com todas as rotas e seus formatos de request/response para sua plataforma de ensino.
+
+## Estrutura Base da API
+
+**Base URL:** `https://api.suaplataforma.com/v1`
+
+## 1. Rotas de Autenticação
+
+### **POST /auth/register**
+Registro de novo usuário
+
+**Request:**
+```json
+{
+  "name": "João Silva",
+  "email": "joao@email.com",
+  "password": "senha123"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "message": "Usuário registrado com sucesso",
+  "data": {
+    "user": {
+      "id": "usr_123456789",
+      "name": "João Silva",
+      "email": "joao@email.com",
+      "bio": null,
+      "avatar": null,
+      "createdAt": "2024-01-15T10:30:00Z"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+```
+
+### **POST /auth/login**
+Login do usuário
+
+**Request:**
+```json
+{
+  "email": "joao@email.com",
+  "password": "senha123"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Login realizado com sucesso",
+  "data": {
+    "user": {
+      "id": "usr_123456789",
+      "name": "João Silva",
+      "email": "joao@email.com",
+      "bio": null,
+      "avatar": null,
+      "role": "user"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+```
+
+## 2. Rotas de Perfil
+
+### **GET /profile/:userId**
+Buscar perfil do usuário (requer token)
+
+**Headers:**
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "user": {
+      "id": "usr_123456789",
+      "name": "João Silva",
+      "email": "joao@email.com",
+      "bio": "Desenvolvedor web apaixonado por tecnologia",
+      "avatar": "https://cdn.suaplataforma.com/avatars/user123.jpg",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "updatedAt": "2024-01-20T15:45:00Z",
+      "stats": {
+        "coursesInProgress": 3,
+        "completedCourses": 2,
+        "totalLessonsWatched": 45
+      }
+    }
+  }
+}
+```
+
+### **PUT /profile/:userId**
+Atualizar perfil (requer token)
+
+**Request:**
+```json
+{
+  "name": "João Silva Updated",
+  "bio": "Nova biografia do usuário",
+  "avatar": "https://cdn.suaplataforma.com/avatars/novo-avatar.jpg"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Perfil atualizado com sucesso",
+  "data": {
+    "user": {
+      "id": "usr_123456789",
+      "name": "João Silva Updated",
+      "email": "joao@email.com",
+      "bio": "Nova biografia do usuário",
+      "avatar": "https://cdn.suaplataforma.com/avatars/novo-avatar.jpg",
+      "updatedAt": "2024-01-21T09:15:00Z"
+    }
+  }
+}
+```
+
+## 3. Rotas de Admin
+
+### **POST /admin/courses**
+Criar novo curso (requer token admin)
+
+**Headers:**
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Request:**
+```json
+{
+  "title": "HTML Completo",
+  "description": "Aprenda HTML do básico ao avançado",
+  "category": "html",
+  "level": "beginner",
+  "thumbnail": "https://cdn.suaplataforma.com/cursos/html-thumb.jpg",
+  "price": "free",
+  "tags": ["html", "web", "frontend"],
+  "published": true
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "message": "Curso criado com sucesso",
+  "data": {
+    "course": {
+      "id": "crs_123456",
+      "title": "HTML Completo",
+      "description": "Aprenda HTML do básico ao avançado",
+      "category": "html",
+      "level": "beginner",
+      "thumbnail": "https://cdn.suaplataforma.com/cursos/html-thumb.jpg",
+      "price": "free",
+      "tags": ["html", "web", "frontend"],
+      "published": true,
+      "createdAt": "2024-01-21T10:00:00Z",
+      "totalModules": 0,
+      "totalLessons": 0
+    }
+  }
+}
+```
+
+### **POST /admin/courses/:courseId/modules**
+Criar módulo para um curso
+
+**Request:**
+```json
+{
+  "title": "Introdução ao HTML",
+  "description": "Primeiros passos com HTML",
+  "order": 1,
+  "lessons": [
+    {
+      "title": "O que é HTML?",
+      "description": "Conceitos básicos de HTML",
+      "content": "HTML é uma linguagem de marcação...",
+      "videoUrl": "https://cdn.suaplataforma.com/videos/intro-html.mp4",
+      "duration": 360,
+      "order": 1,
+      "resources": [
+        {
+          "title": "Material de apoio",
+          "type": "pdf",
+          "url": "https://cdn.suaplataforma.com/resources/material1.pdf"
+        }
+      ]
+    },
+    {
+      "title": "Estrutura básica",
+      "description": "Aprendendo a estrutura de um documento HTML",
+      "content": "Todo documento HTML possui uma estrutura básica...",
+      "videoUrl": "https://cdn.suaplataforma.com/videos/estrutura-html.mp4",
+      "duration": 480,
+      "order": 2,
+      "codeExamples": [
+        {
+          "language": "html",
+          "code": "<!DOCTYPE html>\n<html>\n<head>\n    <title>Minha página</title>\n</head>\n<body>\n    <h1>Olá, mundo!</h1>\n</body>\n</html>"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "message": "Módulo criado com sucesso",
+  "data": {
+    "module": {
+      "id": "mod_789012",
+      "courseId": "crs_123456",
+      "title": "Introdução ao HTML",
+      "description": "Primeiros passos com HTML",
+      "order": 1,
+      "lessons": [
+        {
+          "id": "les_111111",
+          "title": "O que é HTML?",
+          "description": "Conceitos básicos de HTML",
+          "duration": 360,
+          "order": 1,
+          "resources": [
+            {
+              "title": "Material de apoio",
+              "type": "pdf",
+              "url": "https://cdn.suaplataforma.com/resources/material1.pdf"
+            }
+          ]
+        },
+        {
+          "id": "les_222222",
+          "title": "Estrutura básica",
+          "description": "Aprendendo a estrutura de um documento HTML",
+          "duration": 480,
+          "order": 2
+        }
+      ],
+      "totalLessons": 2,
+      "totalDuration": 840,
+      "createdAt": "2024-01-21T11:30:00Z"
+    }
+  }
+}
+```
+
+## 4. Dashboard
+
+### **GET /dashboard**
+Buscar dashboard do usuário (requer token)
+
+**Headers:**
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "user": {
+      "id": "usr_123456789",
+      "name": "João Silva",
+      "avatar": "https://cdn.suaplataforma.com/avatars/user123.jpg"
+    },
+    "progress": {
+      "coursesInProgress": 3,
+      "completedCourses": 2,
+      "totalLessonsWatched": 45,
+      "totalWatchTime": "15h 30m",
+      "certificates": 2
+    },
+    "recentActivities": [
+      {
+        "type": "lesson_completed",
+        "lesson": "Introdução ao HTML",
+        "module": "Módulo 1",
+        "course": "HTML Completo",
+        "completedAt": "2024-01-21T14:30:00Z"
+      },
+      {
+        "type": "course_started",
+        "course": "CSS Fundamentos",
+        "startedAt": "2024-01-20T09:15:00Z"
+      }
+    ],
+    "courses": [
+      {
+        "id": "crs_123456",
+        "title": "HTML Completo",
+        "description": "Aprenda HTML do básico ao avançado",
+        "category": "html",
+        "level": "beginner",
+        "thumbnail": "https://cdn.suaplataforma.com/cursos/html-thumb.jpg",
+        "progress": 65,
+        "modules": [
+          {
+            "id": "mod_789012",
+            "title": "Introdução ao HTML",
+            "order": 1,
+            "progress": 100,
+            "lessons": [
+              {
+                "id": "les_111111",
+                "title": "O que é HTML?",
+                "duration": 360,
+                "completed": true,
+                "order": 1,
+                "content": "HTML é uma linguagem de marcação...",
+                "videoUrl": "https://cdn.suaplataforma.com/videos/intro-html.mp4",
+                "resources": [
+                  {
+                    "title": "Material de apoio",
+                    "type": "pdf",
+                    "url": "https://cdn.suaplataforma.com/resources/material1.pdf"
+                  }
+                ]
+              },
+              {
+                "id": "les_222222",
+                "title": "Estrutura básica",
+                "duration": 480,
+                "completed": true,
+                "order": 2,
+                "content": "Todo documento HTML possui uma estrutura básica...",
+                "videoUrl": "https://cdn.suaplataforma.com/videos/estrutura-html.mp4",
+                "codeExamples": [
+                  {
+                    "language": "html",
+                    "code": "<!DOCTYPE html>\n<html>\n<head>\n    <title>Minha página</title>\n</head>\n<body>\n    <h1>Olá, mundo!</h1>\n</body>\n</html>"
+                  }
+                ]
+              },
+              {
+                "id": "les_333333",
+                "title": "Tags e elementos",
+                "duration": 600,
+                "completed": false,
+                "order": 3
+              }
+            ]
+          },
+          {
+            "id": "mod_789013",
+            "title": "Tags HTML",
+            "order": 2,
+            "progress": 30,
+            "lessons": [
+              {
+                "id": "les_444444",
+                "title": "Tags de texto",
+                "duration": 540,
+                "completed": true,
+                "order": 1
+              },
+              {
+                "id": "les_555555",
+                "title": "Tags de mídia",
+                "duration": 480,
+                "completed": false,
+                "order": 2
+              }
+            ]
+          }
+        ],
+        "nextLesson": {
+          "courseId": "crs_123456",
+          "moduleId": "mod_789012",
+          "lessonId": "les_333333",
+          "title": "Tags e elementos",
+          "module": "Introdução ao HTML"
+        }
+      },
+      {
+        "id": "crs_789012",
+        "title": "CSS Fundamentos",
+        "description": "Aprenda CSS para estilizar suas páginas",
+        "category": "css",
+        "level": "beginner",
+        "thumbnail": "https://cdn.suaplataforma.com/cursos/css-thumb.jpg",
+        "progress": 30,
+        "modules": [...],
+        "nextLesson": {...}
+      },
+      {
+        "id": "crs_345678",
+        "title": "JavaScript Básico",
+        "description": "Fundamentos de JavaScript",
+        "category": "javascript",
+        "level": "beginner",
+        "thumbnail": "https://cdn.suaplataforma.com/cursos/js-thumb.jpg",
+        "progress": 0,
+        "modules": [...],
+        "nextLesson": null
+      }
+    ],
+    "recommendedCourses": [
+      {
+        "id": "crs_901234",
+        "title": "MySQL para Iniciantes",
+        "description": "Aprenda bancos de dados com MySQL",
+        "category": "mysql",
+        "level": "beginner",
+        "thumbnail": "https://cdn.suaplataforma.com/cursos/mysql-thumb.jpg",
+        "totalLessons": 20,
+        "totalDuration": "8h"
+      }
+    ]
+  }
+}
+```
+
+## 5. Categorias de Cursos Disponíveis
+
+### **GET /courses/categories**
+Listar todas as categorias disponíveis
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "categories": [
+      {
+        "id": "html",
+        "name": "HTML",
+        "icon": "https://cdn.suaplataforma.com/icons/html.svg",
+        "totalCourses": 5,
+        "description": "Aprenda a estruturar páginas web"
+      },
+      {
+        "id": "css",
+        "name": "CSS",
+        "icon": "https://cdn.suaplataforma.com/icons/css.svg",
+        "totalCourses": 6,
+        "description": "Estilize suas páginas com CSS"
+      },
+      {
+        "id": "javascript",
+        "name": "JavaScript",
+        "icon": "https://cdn.suaplataforma.com/icons/js.svg",
+        "totalCourses": 8,
+        "description": "Torne suas páginas interativas"
+      },
+      {
+        "id": "mysql",
+        "name": "MySQL",
+        "icon": "https://cdn.suaplataforma.com/icons/mysql.svg",
+        "totalCourses": 3,
+        "description": "Bancos de dados relacionais"
+      }
+    ]
+  }
+}
+```
+
+## 6. Erros Padronizados
+
+**Response de Erro (400 Bad Request):**
+```json
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Dados inválidos",
+    "details": [
+      {
+        "field": "email",
+        "message": "Email já está em uso"
+      },
+      {
+        "field": "password",
+        "message": "Senha deve ter no mínimo 6 caracteres"
+      }
+    ]
+  }
+}
+```
+
+**Response de Erro (401 Unauthorized):**
+```json
+{
+  "success": false,
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Token inválido ou expirado"
+  }
+}
+```
+
+**Response de Erro (403 Forbidden):**
+```json
+{
+  "success": false,
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Você não tem permissão para acessar este recurso"
+  }
+}
+```
+
+**Response de Erro (404 Not Found):**
+```json
+{
+  "success": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "Curso não encontrado"
+  }
+}
+```
+
+Esta estrutura cobre todas as funcionalidades principais da sua plataforma de ensino, incluindo autenticação, perfil, admin para gerenciamento de conteúdo e dashboard completo para os alunos.

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Gerenciar Cursos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div id="login-section" class="card">
+            <h2>Login Admin</h2>
+            <form id="login-form">
+                <input type="email" id="email" placeholder="Email" required />
+                <input type="password" id="password" placeholder="Senha" required />
+                <button type="submit">Entrar</button>
+                <div id="login-error" class="error"></div>
+            </form>
+        </div>
+        <div id="admin-section" class="card" style="display:none;">
+            <h2>Gerenciar Cursos</h2>
+            <button id="logout-btn">Sair</button>
+            <div id="courses-list"></div>
+            <button id="show-create-course">Novo Curso</button>
+            <div id="create-course-form" style="display:none;">
+                <h3>Criar Curso</h3>
+                <form id="course-form">
+                    <input type="text" id="course-title" placeholder="Título" required />
+                    <textarea id="course-description" placeholder="Descrição" required></textarea>
+                    <input type="text" id="course-category" placeholder="Categoria" required />
+                    <input type="text" id="course-level" placeholder="Nível" required />
+                    <input type="text" id="course-thumbnail" placeholder="Thumbnail URL" required />
+                    <input type="text" id="course-price" placeholder="Preço" required />
+                    <input type="text" id="course-tags" placeholder="Tags (separadas por vírgula)" />
+                    <label><input type="checkbox" id="course-published" /> Publicado</label>
+                    <button type="submit">Criar</button>
+                    <button type="button" id="cancel-create-course">Cancelar</button>
+                </form>
+                <div id="course-create-error" class="error"></div>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
